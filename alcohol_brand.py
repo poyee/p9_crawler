@@ -8,7 +8,7 @@ from utils import get_html, read_csv_as_list
 
 brand_list_url = 'https://www.p9.com.tw/Wine/BrandList.aspx?WineTypeId=%s&CountryId=%s'
 
-def get_all_brand_by_type_and_country(type_id, country_id):
+def get_all_brands_by_type_and_country(type_id, country_id):
     file_path = f'csv/{type_id}/{country_id}/brand.csv'
     if path.exists(file_path):
         return read_csv_as_list(file_path)
@@ -53,4 +53,4 @@ def get_all_brand_by_type_and_country(type_id, country_id):
     return brands
 
 if __name__ == "__main__":
-    brands = get_all_brand_by_type_and_country(1, 1)
+    brands = get_all_brands_by_type_and_country(1, 1)
