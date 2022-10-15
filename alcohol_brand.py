@@ -18,7 +18,7 @@ def get_all_brands_by_type_and_country(type_id, country_id):
     soup = BeautifulSoup(html, 'html.parser')
 
     # <a class="a9" href="ProductList.aspx?BrandId=56&WineTypeId=1&AreaId=1">卡爾里拉 Caol Ila(8)</a>
-    href_regex = f"ProductList\.aspx\?BrandId=(\d+)&WineTypeId={type_id}&AreaId=(\d+)"
+    href_regex = f"ProductList\.aspx\?BrandId=(\d+)&WineTypeId={type_id}&AreaId=-?\d+"
     name_regex = re.compile(r"[^\(\)]+\((\d+)\)")
 
     brands = []

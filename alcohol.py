@@ -14,7 +14,7 @@ alcohol_list_url = 'https://www.p9.com.tw/Wine/ProductList.aspx?BrandId=%s&WineT
 alcohol_url = 'https://www.p9.com.tw/Wine/ProductDetail.aspx?id=%s'
 
 def get_alcohol_ids_by_type_by_brand(type_id, country_id, brand_id):
-    file_path = f'csv/{type_id}/{country_id}/{brand_id}/alcohol_id.csv'
+    file_path = f'csv/{type_id}/{country_id}/alcohol_id_{brand_id}.csv'
     if path.exists(file_path):
         return read_csv_as_list(file_path)
 
@@ -36,7 +36,7 @@ def get_alcohol_ids_by_type_by_brand(type_id, country_id, brand_id):
 
 
 def get_alcohols_by_type_by_brand(type_id, country_id, brand_id):
-    file_path = f'csv/{type_id}/{country_id}/{brand_id}/alcohol.csv'
+    file_path = f'csv/{type_id}/{country_id}/alcohol_{brand_id}.csv'
     if path.exists(file_path):
         return read_csv_as_list(file_path)
 
@@ -61,6 +61,9 @@ def get_alcohol_by_id(alcohol_id):
     url = alcohol_url % alcohol_id
     html = get_html(url)
     soup = BeautifulSoup(html, 'html.parser')
+
+    ch_name = soup.find('a', id='ContentBody_hlkProductName').text
+    en_name = soup.find('a', id='ContentBody_hlkEngName').text
 
     attr_to_regex = {
         'type': re.compile(r'類\s+別：(.*)'),
@@ -89,11 +92,14 @@ def get_alcohol_by_id(alcohol_id):
 
     ret = list(alcohol_dict.values())
     ret.insert(0, alcohol_id)
+    ret.insert(1, ch_name)
+    ret.insert(2, en_name)
 
     return ret
 
 def get_all_alcohols_by_type(type_id):
     country_ids = get_all_country_id_by_type(type_id)
+    print(country_ids)
     for country_id in country_ids:
         brands = get_all_brands_by_type_and_country(type_id, country_id)
 
