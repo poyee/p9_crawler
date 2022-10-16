@@ -3,9 +3,9 @@ from urllib.request import Request, urlopen
 import ssl
 
 
-def read_csv_as_list(path):
+def read_csv_as_list(path, delimiter=','):
     with open(path, newline='\n') as f:
-        reader = csv.reader(f)
+        reader = csv.reader(f, delimiter=delimiter)
         return list(reader)
 
 def write_to_csv(path, list):

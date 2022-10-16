@@ -17,7 +17,7 @@ class BrandExtractor:
         self.brand_list_file_path = f'csv/{type_id}/{country_id}/brand.csv'
 
     def get_all_brands(self):
-        if path.exists(self.brand_list_file_path):
+        if self.file_exist():
             return self.read_brand_as_list()
 
         html = get_html(self.brand_list_url)
@@ -57,6 +57,9 @@ class BrandExtractor:
                 f.write(f"{brand_id},{ch_name},{en_name},{alcohol_number}\n")
 
         return brands
+
+    def file_exist(self):
+        return path.exists(self.brand_list_file_path)
 
     def read_brand_as_list(self):
         return read_csv_as_list(self.brand_list_file_path)
