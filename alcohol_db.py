@@ -63,7 +63,23 @@ class AlcoholDbUpdater:
             cursor.executemany(sql, data)
             self.connect.commit()
 
-    def update_alcohols(self, type_id, brand_id, alcohols):
+    def update_alcohols(self, alcohols):
+        sql = """INSERT IGNORE INTO alcohol(id, name, abv)
+              VALUES (%s, %s, %s)"""
+
+        data = []
+        for alcohol in alcohols:
+            alcohol_id = alcohol[0]
+            name = alcohol[1] or alcohol[2]
+            abv = alcohol[7]
+            data.append([alcohol_id, name, abv])
+
+
+        with self.connect.cursor() as cursor:
+            cursor.executemany(sql, data)
+            self.connect.commit()
+
+    def update_brand_alcohols(self, type_id, brand_id, alcohols):
         sql = """INSERT IGNORE INTO brand_alcohol(id, ch_name, en_name, raw_type, produce_year, production_region, 
               volume, abv, manufacturer, ingredient, grape_type, limitation,
               alcohol_type_id, alcohol_brand_id)
@@ -96,6 +112,16 @@ class AlcoholDbUpdater:
             cursor.executemany(sql, data)
             self.connect.commit()
 
+    def update_type_brand(self, type_id, brand_id):
+        sql = """INSERT IGNORE INTO alcohol_type_brand(type_id, brand_id)
+              VALUES (%s, %s)"""
+
+        with self.connect.cursor() as cursor:
+            cursor.execute(sql, [type_id, brand_id])
+            self.connect.commit()
+
+
+
 def update_db_by_type(type_id):
     db_updater = AlcoholDbUpdater()
 
@@ -114,8 +140,10 @@ def update_db_by_type(type_id):
             match = re.match(alcohol_regex, alcohol_file)
             if match:
                 brand_id = match.group(1)
+                db_updater.update_type_brand(type_id, brand_id)
                 alcohols = read_csv_as_list(f'{country_dir}/{alcohol_file}', delimiter=';')
-                db_updater.update_alcohols(type_id, brand_id, alcohols)
+                db_updater.update_alcohols(alcohols)
+                db_updater.update_brand_alcohols(type_id, brand_id, alcohols)
 
 
 
@@ -128,5 +156,6 @@ def update_types():
 
 
 if __name__ == "__main__":
-    # update_types()
+    #update_types()
     update_db_by_type(2)
+

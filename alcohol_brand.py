@@ -39,7 +39,7 @@ class BrandExtractor:
                 alcohol_number = brand_name_match.group(1)
                 brand_name = re.sub(r"\(\d+\)", '', brand_text)
 
-
+                # TODO: can't use white space split
                 brand_names = brand_name.split(' ')
 
                 if len(brand_names) > 1:
@@ -65,6 +65,11 @@ class BrandExtractor:
         return read_csv_as_list(self.brand_list_file_path)
 
 if __name__ == "__main__":
-    extractor = BrandExtractor(1, 1)
-    brands = extractor.get_all_brands()
-    print(brands)
+    # extractor = BrandExtractor(1, 1)
+    # brands = extractor.get_all_brands()
+    # print(brands)
+    brand_text = '3 badge baverage(1)'
+    name_regex = re.compile(r"[^\(\)]+\((\d+)\)")
+    brand_name_match = re.match(name_regex, brand_text)
+    brand_name = re.sub(r"\(\d+\)", '', brand_text)
+    print(brand_name)
